@@ -1,71 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <style>
-        html, body {
-            background-color: #000000;
-            color: #e6e6e6;
-            margin: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            text-align: center;
-        }
-
-        pre {
-            font-family: "Courier New", monospace;
-            font-size: 14px;
-            line-height: 1.2;
-            white-space: pre;
-            margin: 0;
-            background-color: transparent;
-            animation: flash 0.15s infinite alternate;
-        }
-
-        @keyframes flash {
-            0%   { color: #e6e6e6; }
-            50%  { color: #ff0000; }
-            100% { color: #e6e6e6; }
-        }
-
-        #timer {
-            margin-top: 24px;
-            font-family: "Times New Roman", Times, serif;
-            font-size: 24px;
-            color: #ffffff;
-            letter-spacing: 1px;
-        }
-
-        #intro {
-            margin-top: 16px;
-            font-family: "Times New Roman", Times, serif;
-            font-size: 20px;
-            color: #ffffff;
-            max-width: 800px;
-        }
-
-        #link {
-            margin-top: 12px;
-            font-family: "Times New Roman", Times, serif;
-            font-size: 18px;
-        }
-
-        #link a {
-            color: #ffffff;
-            text-decoration: underline;
-        }
-
-        #link a:hover {
-            color: #ff0000;
-        }
-    </style>
+<meta charset="UTF-8">
+<style>
+html, body {
+    background-color: #000;
+    color: #e6e6e6;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+pre {
+    font-family: "Courier New", monospace;
+    font-size: 14px;
+    line-height: 1.2;
+    white-space: pre;
+    margin: 0;
+    animation: flash 0.15s infinite alternate;
+}
+@keyframes flash {
+    0%   { color: #e6e6e6; }
+    50%  { color: #ff0000; }
+    100% { color: #e6e6e6; }
+}
+#timer {
+    margin-top: 60px; /* increased spacing */
+    font-family: "Times New Roman", Times, serif;
+    font-size: 24px;
+    color: #fff;
+    letter-spacing: 1px;
+}
+#message {
+    margin-top: 60px; /* increased spacing */
+    font-family: "Times New Roman", Times, serif;
+    font-size: 18px;
+    color: #fff;
+    min-height: 24px;
+}
+#intro {
+    margin-top: 60px; /* increased spacing */
+    font-family: "Times New Roman", Times, serif;
+    font-size: 20px;
+    color: #fff;
+    max-width: 800px;
+}
+#link {
+    margin-top: 60px; /* increased spacing */
+    font-family: "Times New Roman", Times, serif;
+    font-size: 18px;
+}
+#link a {
+    color: #fff;
+    text-decoration: underline;
+}
+#link a:hover {
+    color: #ff0000;
+}
+#footer {
+    position: fixed;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 14px;
+    color: #888888;
+    animation: fadeInOut 3s infinite;
+}
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+}
+</style>
 </head>
 <body>
 
@@ -98,12 +111,27 @@
 </pre>
 
 <div id="timer"></div>
-<div id="intro">A mini-project by Junø</div>
+<div id="message"></div>
+<div id="intro">Los Angeles, California</div>
 <div id="link">
-    <a href="https://youtu.be/1qAVFps4VVw?si=Q3qfs7hKOaGcVu66" target="_blank">Click here</a>
+    <a href="https://youtu.be/nCiTjY1Luww?si=rYdNWo0plXPqkWhb" target="_blank">Click And Ask Questions Later</a>
 </div>
+<div id="footer">a mini-project by Juno 🏳️‍⚧️</div>
 
 <script>
+const messages = [
+    "Time slips through your fingers, appreciate every moment!",
+    "Still counting…",
+    "How much money could realistically need to spend in a lifetime?",
+    "So Close!!",
+    "Patience is eternal.",
+    "Nothing escapes the countdown... I think",
+    "Moments fade...",
+    "look up :3",
+    "Idiot",
+    "I ran out of stuff to say we're going back to square one!"
+];
+
 function getPacificOffset(date) {
     const utc = date.getTime();
     const pacific = new Date(
@@ -115,37 +143,54 @@ function getPacificOffset(date) {
 function getNextJune3Pacific() {
     const now = new Date();
     const year = now.getUTCFullYear();
-
     let targetUTC = Date.UTC(year, 5, 3, 0, 0, 0);
     let offset = getPacificOffset(new Date(targetUTC));
     let target = new Date(targetUTC - offset);
-
     if (now >= target) {
         targetUTC = Date.UTC(year + 1, 5, 3, 0, 0, 0);
         offset = getPacificOffset(new Date(targetUTC));
         target = new Date(targetUTC - offset);
     }
-
     return target;
 }
 
+// Countdown timer
 function updateTimer() {
     const now = new Date();
     const target = getNextJune3Pacific();
     const diff = target - now;
-
     const totalSeconds = Math.max(0, Math.floor(diff / 1000));
     const seconds = totalSeconds % 60;
     const minutes = Math.floor(totalSeconds / 60) % 60;
     const hours = Math.floor(totalSeconds / 3600) % 24;
     const days = Math.floor(totalSeconds / 86400);
-
     document.getElementById("timer").textContent =
         `${days} DAYS ${hours} HOURS ${minutes} MINUTES ${seconds} SECONDS`;
 }
 
 updateTimer();
 setInterval(updateTimer, 1000);
+
+// Typing effect for dynamic messages with pause/disappear
+let msgIndex = 0;
+let charIndex = 0;
+function typeMessage() {
+    const msgEl = document.getElementById("message");
+    const currentMsg = messages[msgIndex];
+    if(charIndex < currentMsg.length) {
+        msgEl.textContent = currentMsg.slice(0, charIndex + 1);
+        charIndex++;
+        setTimeout(typeMessage, 50);
+    } else {
+        setTimeout(() => {
+            msgEl.textContent = "";
+            charIndex = 0;
+            msgIndex = (msgIndex + 1) % messages.length;
+            setTimeout(typeMessage, 10000);
+        }, 5000);
+    }
+}
+typeMessage();
 </script>
 
 </body>
