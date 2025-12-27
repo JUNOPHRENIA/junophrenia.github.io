@@ -1,190 +1,103 @@
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>HEAT DEATH OF THE UNIVERSE</title>
+    <meta charset="UTF-8">
+    <title>ASCII Wings with Pacific Timer</title>
+    <style>
+        html, body {
+            background-color: #000000;
+            color: #e6e6e6;
+            margin: 0;
+            width: 100%;
+            height: 100%;
+        }
 
-<style>
-    * {
-        box-sizing: border-box;
-        outline: none;
-    }
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
 
-    html, body {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-        background-color: #000000;
-        font-family: "Times New Roman", Times, serif;
-        color: #7a0000;
-    }
+        pre {
+            font-family: "Courier New", Courier, monospace;
+            font-size: 14px;
+            line-height: 1.2;
+            white-space: pre;
+            margin: 0;
+        }
 
-    body {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .container {
-        text-align: center;
-    }
-
-    h1 {
-        font-size: 2.4rem;
-        letter-spacing: 0.45em;
-        margin-bottom: 3rem;
-        color: #6b0000;
-        text-shadow: 0 0 8px #2a0000;
-    }
-
-    .countdown {
-        display: grid;
-        grid-template-columns: repeat(5, auto);
-        gap: 3rem;
-    }
-
-    .unit {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .value {
-        font-size: 2.6rem;
-        color: #8a0000;
-        text-shadow: 0 0 6px #240000;
-    }
-
-    .label {
-        margin-top: 0.6rem;
-        font-size: 0.7rem;
-        letter-spacing: 0.25em;
-        color: #3f3f3f;
-    }
-</style>
+        #timer {
+            margin-top: 24px;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 24px;
+            color: #ffffff;
+            letter-spacing: 1px;
+        }
+    </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>HEAT DEATH OF THE UNIVERSE</h1>
+<pre>
+ .                                                            ,
+ |`.                                                        ,'|
+ \_`-._                                                  _,-'_/
+./ \-._`-._                                          _,-'_,-/ \,
+\._/._ `._>`-.__                                __,-'<_,' _,\_,/
+/_ \_.`-._\_-._ `--__                      __--' _,-_/_,-',_/ _\
+ /._`\_./ _`_./`.-._ `-.                ,-' _,-,'\,_'_ \,_/'_,\
+  \._`/ _/ _`_./  _/`\_ `.            ,' _/'\_  \,_'_ \_ \'_,/
+   /._`/ _/ _`_./` _/ `\_ `\_      _/' _/' \_ '\,_'_ \_ \'_,\
+    \._`/ _/ _`_./` __/  >.  `-.,-'  ,<  \__ '\,_'_ \_ \'_,/
+      /_`/._/._`_./` __.`.-\_.-`'-._/-,',__ '\,_'_,\_,\'_\
+            `\._`_./`\._/_/'    _   `\_\_,/'\,_'_,/'
+</pre>
 
-    <div class="countdown">
-        <div class="unit">
-            <div class="value" id="millennia"></div>
-            <div class="label">MILLENNIA</div>
-        </div>
-        <div class="unit">
-            <div class="value" id="years"></div>
-            <div class="label">YEARS</div>
-        </div>
-        <div class="unit">
-            <div class="value" id="days"></div>
-            <div class="label">DAYS</div>
-        </div>
-        <div class="unit">
-            <div class="value" id="hours"></div>
-            <div class="label">HOURS</div>
-        </div>
-        <div class="unit">
-            <div class="value" id="seconds"></div>
-            <div class="label">SECONDS</div>
-        </div>
-    </div>
-</div>
+<div id="timer"></div>
 
 <script>
-    const STORAGE_KEY = "heat_death_realtime";
+function getPacificNow() {
+    return new Date(
+        new Date().toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
+    );
+}
 
-    const DEFAULT_STATE = {
-        millennia: 417263,
-        years: 842,
-        days: 193,
-        hours: 11,
-        seconds: 27,
-        lastUpdate: Date.now()
-    };
+function getNextJune3Pacific() {
+    const nowPT = getPacificNow();
+    let year = nowPT.getFullYear();
 
-    function loadState() {
-        try {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            return saved ? JSON.parse(saved) : { ...DEFAULT_STATE };
-        } catch {
-            return { ...DEFAULT_STATE };
-        }
+    let target = new Date(
+        new Date(`${year}-06-03T00:00:00`)
+            .toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
+    );
+
+    if (nowPT >= target) {
+        target = new Date(
+            new Date(`${year + 1}-06-03T00:00:00`)
+                .toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
+        );
     }
 
-    function saveState() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    }
+    return target;
+}
 
-    let state = loadState();
+function updateTimer() {
+    const nowPT = getPacificNow();
+    const target = getNextJune3Pacific();
+    const diff = target - nowPT;
 
-    const el = {
-        millennia: document.getElementById("millennia"),
-        years: document.getElementById("years"),
-        days: document.getElementById("days"),
-        hours: document.getElementById("hours"),
-        seconds: document.getElementById("seconds")
-    };
+    const totalSeconds = Math.floor(diff / 1000);
+    const seconds = totalSeconds % 60;
+    const minutes = Math.floor(totalSeconds / 60) % 60;
+    const hours = Math.floor(totalSeconds / 3600) % 24;
+    const days = Math.floor(totalSeconds / 86400);
 
-    function decrementOneSecond() {
-        state.seconds--;
+    document.getElementById("timer").textContent =
+        `${days} DAYS ${hours} HOURS ${minutes} MINUTES ${seconds} SECONDS`;
+}
 
-        if (state.seconds < 0) {
-            state.seconds = 59;
-            state.hours--;
-        }
-
-        if (state.hours < 0) {
-            state.hours = 23;
-            state.days--;
-        }
-
-        if (state.days < 0) {
-            state.days = 364;
-            state.years--;
-        }
-
-        if (state.years < 0) {
-            state.years = 999;
-            state.millennia--;
-        }
-    }
-
-    function applyElapsedTime() {
-        const now = Date.now();
-        let elapsedSeconds = Math.floor((now - state.lastUpdate) / 1000);
-
-        while (elapsedSeconds > 0) {
-            decrementOneSecond();
-            elapsedSeconds--;
-        }
-
-        state.lastUpdate = now;
-    }
-
-    function render() {
-        el.millennia.textContent = state.millennia;
-        el.years.textContent = state.years;
-        el.days.textContent = state.days;
-        el.hours.textContent = state.hours.toString().padStart(2, "0");
-        el.seconds.textContent = state.seconds.toString().padStart(2, "0");
-    }
-
-    function tick() {
-        decrementOneSecond();
-        state.lastUpdate = Date.now();
-        render();
-        saveState();
-    }
-
-    // Apply time passed while page was closed
-    applyElapsedTime();
-    render();
-    saveState();
-
-    setInterval(tick, 1000);
+updateTimer();
+setInterval(updateTimer, 1000);
 </script>
 
 </body>
