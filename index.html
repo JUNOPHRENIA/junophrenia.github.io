@@ -19,6 +19,7 @@ pre {
     white-space: pre;
     margin: 0;
     animation: flash 0.15s infinite alternate;
+    transition: transform 0.05s ease;
     z-index: 2;
 }
 
@@ -36,12 +37,36 @@ html, body {
     overflow-x: hidden; 
 }
 
+/* GEOGRAPHICAL TERMINAL */
+#geo-terminal {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    text-align: right;
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.5);
+    z-index: 10;
+    pointer-events: none;
+    line-height: 1.4;
+    text-transform: uppercase;
+}
+
+.live-dot {
+    color: #ff0000;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
 /* CRT & STATIC OVERLAYS */
 .crt-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
     background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 255, 0, 0.06));
+                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(255, 0, 0, 0.06));
     background-size: 100% 4px, 3px 100%;
     pointer-events: none;
     z-index: 5000;
@@ -92,6 +117,20 @@ html, body {
 @keyframes bar-flicker {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.85; }
+}
+
+/* CLICK GLITCH CLASS - FASTER & SHARPER */
+.glitch-active {
+    animation: glitch-burst 0.05s infinite !important;
+    filter: hue-rotate(180deg) invert(1) contrast(3);
+}
+
+@keyframes glitch-burst {
+    0% { transform: translate(0); }
+    25% { transform: translate(-15px, 10px); }
+    50% { transform: translate(15px, -10px); }
+    75% { transform: translate(-10px, -15px); }
+    100% { transform: translate(0); }
 }
 
 /* STAR FIELD */
@@ -158,7 +197,7 @@ html, body {
     pre { font-size: 14px; }
 }
 
-#link a { color: #fff; text-decoration: underline; }
+#link a { color: #fff; text-decoration: underline; transition: 0.2s; }
 #link a:hover { color: #ff0000; }
 
 #footer {
@@ -180,6 +219,14 @@ html, body {
 </style>
 </head>
 <body>
+
+<div id="geo-terminal">
+    <span class="live-dot">●</span> LIVE FEED: LA_TRANS_V.2<br>
+    LOC: 34.0522° N, 118.2437° W<br>
+    TZ: PT [LOS ANGELES]<br>
+    <span id="live-time">00:00:00</span><br>
+    LUNAR: <span id="moon-phase">CALCULATING...</span>
+</div>
 
 <div class="crt-overlay"></div>
 <div class="static-noise"></div>
@@ -213,7 +260,7 @@ html, body {
 ⠀⠀⠛⠁⡇⠀⠀⣿⢹⡀⠘⡄⠀⠸⣷⢷⣾⣿⣼⡇⢺⠀⠀⠀⠀⠀⠀⠀⡇⢠⣿⡷⣷⣼⣿⠇⠀⢠⠇⠀⡟⢾⠀⠀⢸⠀⠛⠀⠀
 ⠀⠀⠀⠀⡇⠀⠀⣿⠀⢧⠀⢱⠀⠀⢹⡌⠀⠈⠙⣧⣼⠀⠀⠀⠀⠀⠀⠀⢷⣼⠃⠁⠀⢁⡟⠀⠀⡜⠀⣸⠀⢸⠀⠀⢸⠀⠀⠀⠀
 ⠀⠀⠀⠀⣿⠀⠀⣿⠀⠘⡄⠀⢇⠀⠀⢳⡀⠀⠀⠘⠟⠀⠀⠀⠀⠀⠀⠀⠻⠋⠀⠀⠀⡼⠀⠀⢰⠁⢠⠇⠀⢸⠀⠀⣼⠀⠀⠀⠀
-⠀⠀⠀⠀⢹⡆⠀⣿⠀⠀⹀⡀⠘⡄⠀⠈⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⠃⠀⢀⠇⢀⡎⠀⠀⢸⠀⠀⡇⠀⠀⠀⠀
+⠀⠀⠀⠀⢹⡆⠀⣿⠀⠀⢹⡀⠘⡄⠀⠈⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⠃⠀⢀⠇⢀⡎⠀⠀⢸⠀⠀⡇⠀⠀⠀⠀
 ⠀⠀⠀⠀⠈⣧⢠⣿⡀⠀⠀⢳⠀⢱⡀⠀⢹⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡟⠀⠀⡞⠀⡼⠁⠀⠀⣸⡄⢸⠁⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠸⣼⡏⢧⠀⠀⠈⢧⠀⢳⡀⠈⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠃⠀⡼⠁⡸⠁⠀⠀⡸⢋⣧⠏⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠙⠃⠈⢧⡀⠀⠈⣆⠈⣷⣄⢳⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⢠⣾⠁⢰⠃⠀⠀⡼⠁⠐⠛⠀⠀⠀⠀⠀⠀
@@ -226,7 +273,9 @@ html, body {
 <div id="timer" class="domino"></div>
 <div id="message" class="domino"></div>
 <div id="intro" class="domino">Los Angeles, California</div>
-<div id="link" class="domino"><a href="https://youtu.be/nCiTjY1Luww?si=rYdNWo0plXPqkWhb" target="_blank">Click And Ask Questions Later</a></div>
+<div id="link" class="domino">
+    <a href="https://youtu.be/nCiTjY1Luww?si=rYdNWo0plXPqkWhb" target="_blank" onclick="triggerClickGlitch()">Click And Ask Questions Later</a>
+</div>
 <div id="footer">a mini-project by Juno 🏳️‍⚧️</div>
 </div>
 
@@ -247,16 +296,42 @@ function createStars() {
 }
 createStars();
 
+// --- GEOGRAPHICAL SCRIPT ---
+function updateGeo() {
+    const laTime = new Date().toLocaleTimeString("en-US", {timeZone: "America/Los_Angeles", hour12: false});
+    document.getElementById('live-time').textContent = laTime;
+    const phases = ["New Moon", "Waxing Crescent", "First Quarter", "Waxing Gibbous", "Full Moon", "Waning Gibbous", "Last Quarter", "Waning Crescent"];
+    const date = new Date();
+    const lp = 2551443; 
+    const new_moon = new Date(1970, 0, 7, 20, 35, 0);
+    const phase = ((date.getTime() - new_moon.getTime()) / 1000) % lp;
+    const phaseIndex = Math.floor((phase / lp) * 8);
+    document.getElementById('moon-phase').textContent = phases[phaseIndex];
+}
+setInterval(updateGeo, 1000);
+
+// --- CLICK GLITCH LOGIC ---
+function triggerClickGlitch() {
+    const art = document.getElementById('ascii-art');
+    const timer = document.getElementById('timer');
+    
+    art.classList.add('glitch-active');
+    timer.classList.add('glitch-active');
+    
+    // Lasts only 350 milliseconds (a sharp "snap" effect)
+    setTimeout(() => {
+        art.classList.remove('glitch-active');
+        timer.classList.remove('glitch-active');
+    }, 350);
+}
+
 // --- DNA GLITCH LOGIC ---
 function triggerDNASplash() {
     const dnaContainer = document.getElementById('dna-container');
     const bases = ['A', 'C', 'G', 'T'];
     let dnaString = "";
-    for (let i = 0; i < 2500; i++) {
-        dnaString += bases[Math.floor(Math.random() * bases.length)];
-    }
+    for (let i = 0; i < 2500; i++) dnaString += bases[Math.floor(Math.random() * bases.length)];
     dnaContainer.textContent = dnaString;
-
     const positions = [
         {top: 0, left: 0, width: '50%', height: '100%'},    
         {top: 0, right: 0, width: '50%', height: '100%'},   
@@ -264,14 +339,10 @@ function triggerDNASplash() {
         {bottom: 0, left: 0, width: '100%', height: '50%'}  
     ];
     const choice = positions[Math.floor(Math.random() * positions.length)];
-    
-    // Reset styles
     dnaContainer.style.top = 'auto'; dnaContainer.style.bottom = 'auto';
     dnaContainer.style.left = 'auto'; dnaContainer.style.right = 'auto';
-
     Object.assign(dnaContainer.style, choice);
     dnaContainer.style.display = 'block';
-
     setTimeout(() => {
         dnaContainer.style.display = 'none';
         scheduleNextSplash();
@@ -279,7 +350,7 @@ function triggerDNASplash() {
 }
 
 function scheduleNextSplash() {
-    const nextInterval = Math.random() * 20000 + 15000; // 15-35 seconds
+    const nextInterval = Math.random() * 20000 + 15000;
     setTimeout(triggerDNASplash, nextInterval);
 }
 
@@ -293,7 +364,7 @@ function enterSite() {
         overlay.style.display = "none";
         dominoes.forEach(el => el.classList.add("visible"));
         setTimeout(typeMessage, 3000); 
-        scheduleNextSplash(); // Start DNA cycle
+        scheduleNextSplash();
     }, 1000);
 }
 
@@ -310,29 +381,10 @@ const messages = [
     "I still love you 💚"
 ];
 
-function getPacificOffset(date) {
-    const utc = date.getTime();
-    const pacific = new Date(date.toLocaleString("en-US", { timeZone: "America/Los_Angeles" })).getTime();
-    return pacific - utc;
-}
-
-function getNextJune3Pacific() {
-    const now = new Date();
-    const year = now.getUTCFullYear();
-    let targetUTC = Date.UTC(year, 5, 3, 0, 0, 0);
-    let offset = getPacificOffset(new Date(targetUTC));
-    let target = new Date(targetUTC - offset);
-    if (now >= target) {
-        targetUTC = Date.UTC(year + 1, 5, 3, 0, 0, 0);
-        offset = getPacificOffset(new Date(targetUTC));
-        target = new Date(targetUTC - offset);
-    }
-    return target;
-}
-
 function updateTimer() {
     const now = new Date();
-    const target = getNextJune3Pacific();
+    let target = new Date(now.getFullYear(), 5, 3); 
+    if (now > target) target.setFullYear(now.getFullYear() + 1);
     const diff = target - now;
     const totalSeconds = Math.max(0, Math.floor(diff / 1000));
     const seconds = totalSeconds % 60;
@@ -346,8 +398,6 @@ function updateTimer() {
     const percent = Math.min(100, Math.max(0, (secondsElapsed / totalYearSeconds) * 100));
     document.getElementById("progress-bar").style.width = percent + "%";
 }
-
-updateTimer();
 setInterval(updateTimer, 1000);
 
 let msgIndex = 0;
