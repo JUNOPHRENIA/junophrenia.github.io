@@ -1,1 +1,1 @@
-they cañl me juno cuz i uhhh i uhhhhhhh yeah 
+they call me juno cuz i uhhh i uhhhhhhh yeah 
