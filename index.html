@@ -26,6 +26,13 @@
             white-space: pre;
             margin: 0;
             background-color: transparent;
+            animation: flash 0.15s infinite alternate;
+        }
+
+        @keyframes flash {
+            0%   { color: #e6e6e6; }
+            50%  { color: #ff0000; }
+            100% { color: #e6e6e6; }
         }
 
         #timer {
@@ -34,6 +41,29 @@
             font-size: 24px;
             color: #ffffff;
             letter-spacing: 1px;
+        }
+
+        #intro {
+            margin-top: 16px;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 20px;
+            color: #ffffff;
+            max-width: 800px;
+        }
+
+        #link {
+            margin-top: 12px;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 18px;
+        }
+
+        #link a {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+
+        #link a:hover {
+            color: #ff0000;
         }
     </style>
 </head>
@@ -68,6 +98,10 @@
 </pre>
 
 <div id="timer"></div>
+<div id="intro">A mini-project by Junø</div>
+<div id="link">
+    <a href="https://youtu.be/1qAVFps4VVw?si=Q3qfs7hKOaGcVu66" target="_blank">Click here</a>
+</div>
 
 <script>
 function getPacificOffset(date) {
